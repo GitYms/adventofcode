@@ -1,5 +1,5 @@
 // 获取数组中的相同值
-function getIntersection(arr, brr) {
+module.exports = function getIntersection(arr, brr) {
   const result = [];
   const temp = [];
   for(let i = 0; i < arr.length; i++) {
@@ -12,5 +12,3 @@ function getIntersection(arr, brr) {
   }
   return result;
 }
-
-export default getIntersection;

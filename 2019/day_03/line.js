@@ -1,9 +1,7 @@
-import  getIntersection from '../common/common';
+const getIntersection = require('../common/common')
 
 const fs = require('fs')
 const data = fs.readFileSync("./input",{ encoding: "utf8" }).split("\n")
-const line1 = data[0].split(',');
-const line2 = data[1].split(',');
 /*
   INPUT: 两条线
   part_01: 
@@ -55,13 +53,14 @@ function getPoint(startPoint = [0, 0], line) {
   }
   return result;
 };
-function minManhattan(a, b) {
-  const linePoints1 = getPath(a);
-  const linePoints2 = getPath(b);
+function minManhattan(data) {
+  const line1 = data[0].split(',');
+  const line2 = data[1].split(',');
+  const linePoints1 = getPath(line1);
+  const linePoints2 = getPath(line2);
   const intersectionsPoints = getIntersection(linePoints1, linePoints2);
   const distance = intersectionsPoints.map(e => (Math.abs(e[0]) + Math.abs(e[1]) ));
   return distance.length > 0 ? Math.min(...distance) : 0;
 }
-
-const answer1 = minManhattan(line1, line2);
+const answer1 = minManhattan(data);
 console.log(answer1)
