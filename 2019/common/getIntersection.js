@@ -7,7 +7,7 @@ module.exports = function getIntersection(arr, brr) {
   };
   for(let j = 0; j < brr.length; j++) {
     if(temp[brr[j]]) {
-      result.push(JSON.parse(brr[j]))
+      result.push(brr[j])
     }
   }
   return result;
