@@ -25,7 +25,7 @@ function process(input, data) {
     const { opcode, varA, varB, varC } = resolveOpcode(data[i]);
     const paramA = varA === 0 ? arr[arr[i+1]] : arr[i+1];
     const paramB = varB === 0 ? arr[arr[i+2]] : arr[i+2];
-    const outputPosition = varC === 0 && arr[i+3];
+    const outputPosition = varC === 0 ? arr[arr[i+3]] : arr[i+3];
     if(opcode === 1) {
       arr[outputPosition] = (paramA - 0) + (paramB - 0);
       i = i + 4;
@@ -39,7 +39,7 @@ function process(input, data) {
       i = i + 2;
     }
     if(opcode === 4) {
-      output.push(arr[arr[i+1]]);
+      output.push(paramA);
       i = i + 2;
     }
     if(opcode === 99) {
@@ -48,4 +48,4 @@ function process(input, data) {
   }
   console.log('output', output)
 }
-console.log(process(1, data))
+process(1, data);
