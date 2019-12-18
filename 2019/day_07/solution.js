@@ -46,25 +46,28 @@ function processOutput(input, data) {
       i = i + 4;
     }
     if(opcode === 99) {
+      console.log(99)
       return output;
     }
   }
-  return output;
+  // return output;
 }
 const test1 = [3,15,3,16,1002,16,10,16,1,16,15,15,4,15,99,0,0]; // 43210
 const test2 = [3,23,3,24,1002,24,10,24,1002,23,-1,23,
   101,5,23,23,1,24,23,23,4,23,99,0,0]; // 54321
 const test3 = [3,31,3,32,1002,32,10,32,1001,31,-2,31,1007,31,0,33,
   1002,33,7,33,1,33,31,31,1,32,31,31,4,31,99,0,0,0]; // 65210
-function getSingal(sequences, data) {
-  const outputArr = [0];
+function getSingal(sequences, data, init = 0) {
+  // 4363425
+  const outputArr = [init];
   while(sequences.length > 0) {
     const sequence = sequences.shift();
     const input = [sequence, outputArr[outputArr.length - 1]];
-    const result = processOutput(input, data)[0];
-    outputArr.push(result)
+    const result = processOutput(input, data);
+    outputArr.push(result[0])
   }
-  return outputArr[outputArr.length - 1];
+  // console.log('getSingal outputArr', outputArr)
+  return outputArr;
 }
 function getSequences(numbers) {
   const sequences = [];
@@ -90,12 +93,15 @@ function getMaxSingal(data) {
   // 获取序列sequences 【0，1，2，3，4】的任意组合
   const sequences = getSequences([0, 1, 2, 3, 4]);
   // one sequence -> one singal 
-  const singals = sequences.map(sequence => getSingal(sequence, data));
+  const singals = sequences.map(sequence => {
+    const singals = getSingal(sequence, data)
+    return singals[singals.length - 1]
+  });
   // 获取最大的signal
   return Math.max(...singals)
 }
-const answer1 = getMaxSingal(data);
-console.log('answer1:', answer1)
+// const answer1 = getMaxSingal(data);
+// console.log('answer1:', answer1)
 
 
 // part 2
@@ -104,12 +110,20 @@ const testData1 = [3,26,1001,26,-4,26,3,27,1002,27,2,27,1,27,26,
 const testData2 = [3,52,1001,52,-5,52,3,53,1,52,56,54,1007,54,5,55,1005,55,26,1001,54,
   -5,54,1105,1,12,1,53,54,53,1008,54,0,55,1001,55,1,55,2,53,55,53,4,
   53,1001,56,-1,56,1005,56,6,99,0,0,0,0,10]; // 18216
+function getCircleSingal(sequence, data) {
+  // 4363425  139629729
+    singals = getSingal(sequence, data, 0);
+    console.log(singals)
+   // return singals[singals.length - 1];
+}
 function getCircleMaxSingal(data) {
   const sequences = getSequences([9, 8, 7, 6, 5]);
-  // 循环sequences -> 循环processOutput 直到没有输出 ->得到signal;
-  const singals = sequences.map(sequence => {
-    // processOutput 输出：【n】
-  })
+  const testSequence = [9, 8, 7, 6, 5];
+  const signgal = getCircleSingal(testSequence, data);
+  const singals = sequences.map(sequence =>  getCircleSingal(sequence, data));
+  
+  return Math.max(...singals)
 }
-const answer2 = getCircleMaxSingal(data);
-console.log('answer2:', answer2)
+getCircleSingal([9,8,7,6,5], testData1)
+// const answer2 = getCircleMaxSingal(data);
+// console.log('answer2:', answer2)
