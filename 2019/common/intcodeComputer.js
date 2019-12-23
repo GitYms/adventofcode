@@ -1,10 +1,24 @@
-module.exports = function intcodeComputer(data, input, index = 0, base = 0, output) {
-  let j = true;
+const resolveOpcode = require('./resolveOpcode');
+function getIndex(data, index, base, mode) {
+  let result;
+  if(mode === 1) {
+    result = index;
+  }else if(mode === 2) {
+    result = index + base;
+  }else {
+    result = data[index];
+  }
+  console.log('index', result)
+  return result;
+}
+
+module.exports = function intcodeComputer(data, input, index = 0, base = 0, output = []) {
   for(let i = index; i < data.length;) {
-    const { opcode, varA, varB, varC } = resolveOpcode(data[i]);
-    const index1 = varA === 0 ? data[i+1] : i+1;
-    const index2 = varB === 0 ? data[i+2] : i+2;
-    const index3 = varC === 0 ? data[i+3] : i+3;
+    const { opcode, modeA, modeB, modeC } = resolveOpcode(data[i]);
+    const index1 = getIndex(data, i+1, base, modeA);
+    // console.log(index1)
+    const index2 = getIndex(data, i+2, base, modeB);
+    const index3 = getIndex(data, i+3, base, modeC);
     const paramA = data[index1];
     const paramB = data[index2];
     if(opcode === 1) {
@@ -21,6 +35,8 @@ module.exports = function intcodeComputer(data, input, index = 0, base = 0, outp
       i = i + 2;
     }
     if(opcode === 4) {
+      console.log(index)
+      console.log(paramA)
       output.push(paramA);
       i = i + 2;
     }
