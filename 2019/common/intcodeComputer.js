@@ -4,19 +4,18 @@ function getIndex(data, index, base, mode) {
   if(mode === 1) {
     result = index;
   }else if(mode === 2) {
-    result = index + base;
-  }else {
+    result = base + data[index];
+  }else if(mode === 0) {
     result = data[index];
   }
-  console.log('index', result)
   return result;
 }
 
-module.exports = function intcodeComputer(data, input, index = 0, base = 0, output = []) {
-  for(let i = index; i < data.length;) {
+module.exports = function intcodeComputer(data, input, base = 0) {
+  const output = [];
+  for(let i = 0; i < data.length;) {
     const { opcode, modeA, modeB, modeC } = resolveOpcode(data[i]);
     const index1 = getIndex(data, i+1, base, modeA);
-    // console.log(index1)
     const index2 = getIndex(data, i+2, base, modeB);
     const index3 = getIndex(data, i+3, base, modeC);
     const paramA = data[index1];
@@ -35,8 +34,6 @@ module.exports = function intcodeComputer(data, input, index = 0, base = 0, outp
       i = i + 2;
     }
     if(opcode === 4) {
-      console.log(index)
-      console.log(paramA)
       output.push(paramA);
       i = i + 2;
     }
