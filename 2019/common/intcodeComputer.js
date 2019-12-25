@@ -18,7 +18,7 @@ module.exports = function intcodeComputer(data, input, base = 0) {
     const index1 = getIndex(data, i+1, base, modeA);
     const index2 = getIndex(data, i+2, base, modeB);
     const index3 = getIndex(data, i+3, base, modeC);
-    const paramA = data[index1];
+    const paramA = data[index1] || 0;
     const paramB = data[index2];
     if(opcode === 1) {
       data[index3] = (paramA - 0) + (paramB - 0);
@@ -29,8 +29,7 @@ module.exports = function intcodeComputer(data, input, base = 0) {
       i = i + 4;
     }
     if(opcode === 3) {
-      data[index1] = j ? input[0] : input[1];
-      j = !j;
+      data[index1] = input;
       i = i + 2;
     }
     if(opcode === 4) {
