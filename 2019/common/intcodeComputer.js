@@ -10,7 +10,17 @@ function getIndex(data, index, base, mode) {
   }
   return result;
 }
-
+function changeIndex(opcode, index) {
+  const addTwo = [3, 4, 9];
+  const addFour = [1, 2, 7, 8]
+  if (addTwo.indexOf(opcode)) {
+    return index + 2;
+  } else if(addFour.indexOf(opcode)){
+    return index + 4;
+  } else {
+    return index;
+  }
+}
 module.exports = function intcodeComputer({arr, i, input, base = 0, output = []}) {
   const data = [...arr]
   const outputArr = [...output];
@@ -22,40 +32,34 @@ module.exports = function intcodeComputer({arr, i, input, base = 0, output = []}
   const paramB = data[index2];
   if(opcode === 1) {
     data[index3] = (paramA - 0) + (paramB - 0);
-    i = i + 4;
   }
   if(opcode === 2) {
     data[index3] = (paramA - 0) * (paramB - 0);
-    i = i + 4;
   }
   if(opcode === 3) {
     data[index1] = input;
-    i = i + 2;
   }
   if(opcode === 4) {
     outputArr.push(paramA);
-    i = i + 2;
   }
   if(opcode === 5) {
-    paramA !== 0 ? i = paramB : i = i + 3;
+    i = (paramA !== 0) ? paramB : i + 3;
   }
   if(opcode === 6) {
-    paramA === 0 ? i = paramB : i = i + 3;
+    i = (paramA === 0) ?  paramB : i + 3;
   }
   if(opcode === 7) {
-    paramA < paramB ? data[index3] = 1 : data[index3] = 0;
-    i = i + 4;
+    data[index3] = (paramA < paramB) ?  1 : 0;
   }
   if(opcode === 8) {
-    paramA === paramB ? data[index3] = 1 : data[index3] = 0;
-    i = i + 4;
+    data[index3] = (paramA === paramB) ? 1 : 0;
   }
   if(opcode === 9) {
     base += paramA;
-    i = i + 2;
   }
   if(opcode === 99) {
     return outputArr;
   }
-  return { data, i: i, input: input, base: base, output: outputArr }
+  const index = changeIndex(opcode, i);
+  return { data: [...data], i: index, input, base, output: outputArr }
 }
