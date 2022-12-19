@@ -10,6 +10,7 @@ const TOTAL = 70000000;
   输出：
     part01: 不超过 MAX_SIZE 的所有文件的总和（可能有重复的） 
       文件夹 A下有文件夹B， 则分别算A、B的值（A的值： B + 其他）
+    part02: 删除一个文件，满足使空余空间 >= SIZE_NEED, 这个文件的大小
 */
 
 const getFileNum = (str) => {
@@ -62,8 +63,6 @@ const getFolderSizeArr = (input, folders) => {
 
 const folderSizeArr = getFolderSizeArr(input, []);
 
-// console.log('folderSizeArr', folderSizeArr)
-
 // 获取 没有大于限制的总和
 const getFolderTotal = (folders) => {
   let res = 0;
@@ -75,17 +74,15 @@ const getFolderTotal = (folders) => {
 
 const getSize = (folders) => {
   const orderedFolders = folders.sort((a, b) => a - b);
-  const sizeExist = folders.reduce((a, b) => a + b, 0);
+  const sizeExist = folders[folders.length - 1]; // 最后的值为根目录的大小
   const needSize = SIZE_NEED - (TOTAL - sizeExist);
-  console.log('orderedFolders', orderedFolders)
-  let total = 0;
   for (let i = 0; i < orderedFolders.length; i++) {
-    total += orderedFolders[i];
-    if (total >= needSize) {
-      return total;
+    const size = orderedFolders[i]
+    if (size >= needSize) {
+      return size;
     }
   }
 }
 
-// console.log('part 01: ', getFolderTotal(folderSizeArr));
+console.log('part 01: ', getFolderTotal(folderSizeArr));
 console.log('part 02: ', getSize(folderSizeArr));
