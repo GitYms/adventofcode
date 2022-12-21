@@ -49,20 +49,20 @@ const tailChange = (hPoint, tPoint) => {
   return [tx - 1, ty + 1]; // 左上
 }
 
-const getPath = ({ headPoint, tailPoint, pathTailGo, moveInfo }) => {
+const getTailPath = ({ headPoint, tailPoint, pathTailGo, moveInfo }) => {
   const pointsThrough = new Set([...pathTailGo]);
   const [direction, num] = moveInfo.split(' ');
   const goNum = Number(num);
   let hPoint = headPoint;
   let tPoint = tailPoint;
   for (let i = 0; i < goNum; i++) {
+    hPoint = headChange(hPoint, direction);
     const touch = isTouch(hPoint, tPoint);
     if (!touch) {
-      tPoint = tailChange(hPoint, tPoint, direction);
+      tPoint = tailChange(hPoint, tPoint);
       const [x, y] = tPoint;
       pointsThrough.add(`${x} ${y}`);
     }
-    hPoint = headChange(hPoint, direction);
   }
   return { headPoint: hPoint, tailPoint: tPoint, paths: [...pointsThrough]  };
 }
@@ -73,15 +73,65 @@ const getPositionNum = (input) => {
   let tailPoint = [0, 0];
   for (let i = 0; i < input.length; i++) {
     const moveInfo = input[i];
-    const res = getPath({ headPoint, tailPoint, pathTailGo, moveInfo });
+    const res = getTailPath({ headPoint, tailPoint, pathTailGo, moveInfo });
     headPoint = res.headPoint;
     tailPoint = res.tailPoint;
     pathTailGo = res.paths;
   }
-  console.log('pathTailGo', pathTailGo.length)
-  return pathTailGo;
+  return pathTailGo.length;
 }
 
-// getPositionNum(testInput)
-console.log('part o1', getPositionNum(input));
+const getTailsPath = ({ headPoint, tailPoint, pathTailGo, tailMovedNum, lastPaths, moveInfo }) => {
+  const pointsThrough = [...pathTailGo];
+  const aimPaths = new Set([...lastPaths]);
+  const [direction, num] = moveInfo.split(' ');
+  const goNum = Number(num);
+  let hPoint = headPoint;
+  let tPoint = tailPoint;
+  let tailsNum = tailMovedNum;
+  for (let i = 0; i < goNum; i++) {
+    hPoint = headChange(hPoint, direction);
+    const touch = isTouch(hPoint, tPoint);
+    if (!touch) {
+      tPoint = tailChange(hPoint, tPoint);
+      tailsNum += 1;
+      pointsThrough.push(`${tPoint[0]} ${tPoint[1]}`);
+      if (tailsNum === 8) {
+        const [x, y] = pointsThrough[aimPaths.length];
+        aimPaths.add(`${x} ${y}`);
+        tailsNum = 0;
+      }
+    }
+  }
+  return { headPoint: hPoint, tailPoint: tPoint, tailsNum, allPaths: pointsThrough, uniPaths: [...aimPaths] };
+}
+
+const getLastTails = (input) => {
+  let paths1Go = ['0 0'];
+  let paths9G0 = [];
+  let hPoint = [0, 0];
+  let tPoint1 = [0, 0];
+  let tailMoved = 0;
+  for (let i = 0; i < input.length; i ++) {
+    const moveInfo = input[i];
+    const parms = {
+      headPoint: hPoint,
+      tailPoint: tPoint1,
+      pathTailGo: paths1Go,
+      tailMoved,
+      moveInfo,
+      lastPaths: paths9G0
+    }
+    const { allPaths, headPoint, tailPoint, uniPaths, tailsNum } = getTailsPath(parms);
+    paths1Go = allPaths;
+    hPoint = headPoint;
+    tPoint1 = tailPoint;
+    paths9G0 = uniPaths;
+    tailMoved = tailsNum;
+  }
+  return paths9G0.length;
+}
+
+// console.log('part 01', getPositionNum(input));
+console.log('part 02:', getLastTails(input));
 
