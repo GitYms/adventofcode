@@ -27,25 +27,48 @@ const transInput = (input) => {
   return res;
 }
 
-const isInOrder = (input) => {
-  const left = JSON.parse(input[0]);
-  const right = JSON.parse(input[1]);
-  console.log('left', left, right)
-  if (left.length > right.length) {
-    return false;
-  }
+const getIsInOrder = (left, right) => {
+  const len = left.length > right.length ? right.length : left.length;
   for (let i = 0; i < left.length; i++) {
-    // 均是整数的情况
-    if (left[i] && !right[i]) {
+    const packageA = left[i];
+    const packageB = right[i];
+    if (packageA && !packageB) {
       return false
     }
-    if (left[i] > right[i]) {
+    // 均是数组 数组 & 整数
+    if (typeof packageA === 'object' || typeof packageB === 'object') {
+      const littleLeft = typeof packageA === 'object' ? packageA : [packageA];
+      const littleRight = typeof packageB === 'object' ? packageB : [packageB];
+      const res = getIsInOrder(littleLeft, littleRight);
+      if(!res) {
+        return res;
+      }
+    }
+    // 均是整数的情况
+    if (packageA > packageB) {
       return false;
     }
-    // 同为数组、 一为数组一为整数
+    if (packageA < packageB) {
+      return true;
+    }
   }
   return true;
 }
 
+const getIndexSum = (input) => {
+  let res = 0;
+  const inputArr = transInput(input);
+  for (let i = 0; i < inputArr.length; i++) {
+    const left = JSON.parse(inputArr[i][0]);
+    const right = JSON.parse(inputArr[i][1]);
+    const isInOrder = getIsInOrder(left, right);
+    if (isInOrder) {
+      res += (i + 1);
+    }
+  }
+  return res;
+}
+
 // test 1，2,4，6（13）
-console.log('test isInOrder', isInOrder([ '[9]', '[[8,7,6]]' ]));
+// console.log('test isInorder', getIsInOrder([1,1,3,1,1], [1,1,5,1,1]))
+console.log('part 01:', getIndexSum(input));
